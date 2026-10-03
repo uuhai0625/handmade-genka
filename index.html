@@ -1,0 +1,584 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<script>
+  (function() {
+    var GA_ID = 'G-SXVGC1V75E';
+    var isLocalDev = ['localhost', '127.0.0.1', ''].includes(location.hostname);
+    if (isLocalDev) return;
+    var gaQ = new URLSearchParams(location.search); if (gaQ.get('obs') === '1' || gaQ.get('no_ga') === '1') return;
+    var s = document.createElement('script');
+    s.async = true;
+    s.src = 'https://www.googletagmanager.com/gtag/js?id=' + GA_ID;
+    document.head.appendChild(s);
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){ dataLayer.push(arguments); }
+    gtag('js', new Date());
+    gtag('config', GA_ID);
+    document.addEventListener('click', function(e) {
+      var a = e.target && e.target.closest ? e.target.closest('a[href*="booth.pm"]') : null;
+      if (!a) return;
+      gtag('event', 'booth_click', { link_url: a.href, link_id: a.id || '', link_text: (a.textContent || '').trim().slice(0, 40) });
+    });
+  })();
+</script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="ハンドメイドの原価計算と値段の決め方を無料で。材料費・作業時間&#215;時給・梱包代・送料から、手渡し・minne・Creema・BASE・メルカリ・BOOTH・委託・卸の値段の目安と手取り・時給・原価率を一覧に。どの売り方でも同じ値段にする統一価格や、「材料費の3倍」だと時給いくらかも確認できます。アプリ・登録不要。">
+<link rel="canonical" href="https://uuhai0625.github.io/handmade-genka/">
+<meta property="og:type" content="website">
+<meta property="og:locale" content="ja_JP">
+<meta property="og:title" content="ハンドメイド原価計算ツール(無料)|値段の決め方・時給・原価率と委託/卸の掛け率">
+<meta property="og:description" content="ハンドメイドの原価計算と値段の決め方を無料で。材料費・作業時間&#215;時給・梱包代・送料から、手渡し・minne・Creema・BASE・メルカリ・BOOTH・委託・卸の値段の目安と手取り・時給・原価率を一覧に。どの売り方でも同じ値段にする統一価格や、「材料費の3倍」だと時給いくらかも確認できます。アプリ・登録不要。">
+<meta property="og:url" content="https://uuhai0625.github.io/handmade-genka/">
+<title>ハンドメイド原価計算ツール(無料)|値段の決め方・時給・原価率と委託/卸の掛け率</title>
+<style>
+  :root {
+    --bg: #f5f6f0;
+    --panel: #ffffff;
+    --border: #dde1d3;
+    --field-border: #737a63;
+    --text: #262a1f;
+    --muted: #55594a;
+    --accent: #56722b;
+    --accent-dark: #3f5620;
+    --soft: #eef3e3;
+    --warn-bg: #fff4e0;
+    --warn-text: #7a4b00;
+    --ng: #b3261e;
+    --locked: #aeb4a0;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; font-family: "Hiragino Kaku Gothic ProN", "Yu Gothic", "Meiryo", sans-serif; background: var(--bg); color: var(--text); line-height: 1.7; }
+  header { background: linear-gradient(135deg, var(--accent), var(--accent-dark)); color: #fff; padding: 24px 20px 18px; text-align: center; }
+  header h1 { margin: 0 0 6px; font-size: 1.35rem; }
+  header p { margin: 0; font-size: .9rem; }
+  main { max-width: 1040px; margin: 0 auto; padding: 22px 16px 50px; }
+  section.card { background: var(--panel); border: 1px solid var(--border); border-radius: 12px; padding: 18px 20px; margin-bottom: 18px; }
+  section.card h2 { margin: 0 0 6px; font-size: 1.05rem; display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+  section.card h3 { margin: 14px 0 4px; font-size: .95rem; }
+  .desc { color: var(--muted); font-size: .84rem; margin: 0 0 12px; }
+  .fine { color: var(--muted); font-size: .8rem; margin: 8px 0 0; }
+  .badge { display: inline-block; font-size: .72rem; padding: 2px 8px; border-radius: 999px; background: #fff1cc; color: #7a5600; font-weight: bold; }
+  .hidden { display: none !important; }
+  .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border: 0; }
+  label.field { display: block; margin-bottom: 10px; }
+  .lbl { font-size: .82rem; font-weight: bold; display: block; }
+  .hint { font-size: .78rem; color: var(--muted); font-weight: normal; display: block; margin-top: 2px; }
+  input[type=text], select { width: 100%; margin-top: 4px; padding: 8px 10px; min-height: 44px; border: 1px solid var(--field-border); border-radius: 8px; font-size: 1rem; font-family: inherit; background: #fff; color: var(--text); }
+  input[aria-invalid=true] { border-color: var(--ng); border-width: 2px; }
+  .row2, .row3, .row4 { display: flex; gap: 10px; }
+  .row2 > *, .row3 > *, .row4 > * { flex: 1; min-width: 0; }
+  .bar { display: flex; gap: 10px; align-items: flex-end; flex-wrap: wrap; }
+  .bar > .field { flex: 1; min-width: 12em; margin-bottom: 0; }
+  label.check { display: flex; align-items: center; gap: 8px; min-height: 44px; font-size: .86rem; cursor: pointer; }
+  label.check input { width: 20px; height: 20px; margin: 0; flex-shrink: 0; }
+  .unit { display: flex; align-items: center; gap: 6px; }
+  .unit input { flex: 1; min-width: 0; }
+  .unit span { font-size: .85rem; color: var(--muted); white-space: nowrap; margin-top: 4px; }
+  .seg { display: flex; gap: 8px; flex-wrap: wrap; }
+  .seg label { min-height: 44px; display: flex; align-items: center; gap: 6px; border: 1px solid var(--field-border); border-radius: 8px; padding: 6px 12px; font-size: .86rem; cursor: pointer; background: #fff; }
+  .seg label.on { border-color: var(--accent); background: var(--soft); font-weight: bold; }
+  .seg label:focus-within { outline: 2px solid var(--accent); outline-offset: 1px; }
+  fieldset.plain { border: none; padding: 0; margin: 0 0 10px; min-width: 0; }
+  fieldset.plain legend { font-size: .82rem; font-weight: bold; padding: 0; margin-bottom: 4px; }
+
+  .mat-head, .mat-row { display: grid; grid-template-columns: 1.6fr 1fr 1fr 1fr .9fr 44px; gap: 6px; align-items: end; }
+  .mat-head { font-size: .76rem; font-weight: bold; color: var(--muted); }
+  .mat-row { margin-top: 6px; }
+  .mat-row input { margin-top: 0; }
+  .mat-row .cost { font-size: .9rem; text-align: right; padding-bottom: 10px; font-variant-numeric: tabular-nums; }
+  .mat-row .cost.bad { color: var(--ng); font-size: .78rem; font-weight: bold; }
+  .mat-row .rm { min-height: 44px; border: 1px solid var(--field-border); border-radius: 8px; background: #fff; cursor: pointer; font-family: inherit; color: var(--text); }
+  .mat-row .mlbl { display: none; font-size: .74rem; font-weight: bold; color: var(--muted); }
+  .sum-line { display: flex; justify-content: space-between; border-top: 1px solid var(--border); margin-top: 10px; padding-top: 8px; font-weight: bold; }
+
+  .btn-row { display: flex; gap: 8px; margin-top: 12px; flex-wrap: wrap; align-items: center; }
+  .btn { min-height: 44px; padding: 9px 16px; border-radius: 8px; font-size: .88rem; cursor: pointer; border: 1px solid var(--field-border); background: #fff; color: var(--text); font-family: inherit; }
+  .btn.primary { background: var(--accent); border-color: var(--accent); color: #fff; font-weight: bold; }
+  .btn.small { min-height: 40px; padding: 6px 12px; font-size: .82rem; }
+  .btn:disabled { opacity: .5; cursor: not-allowed; }
+  .btn:focus-visible, .mat-row .rm:focus-visible, .table-wrap:focus-visible { outline: 2px solid var(--accent-dark); outline-offset: 2px; }
+  .status { font-size: .82rem; color: var(--muted); margin-top: 6px; min-height: 1.2em; }
+  .status.err { color: var(--ng); font-weight: bold; }
+  .warn { background: var(--warn-bg); color: var(--warn-text); border-radius: 8px; padding: 8px 12px; font-size: .83rem; margin: 8px 0 0; }
+  .mode-note { background: var(--soft); border-left: 4px solid var(--accent); border-radius: 6px; padding: 6px 10px; font-size: .84rem; margin: 0 0 8px; }
+
+  .breakdown { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 8px; margin-bottom: 12px; }
+  .bd { background: var(--soft); border-radius: 10px; padding: 8px 12px; }
+  .bd .k { font-size: .76rem; color: var(--muted); font-weight: bold; }
+  .bd .v { font-size: 1.15rem; font-weight: bold; font-variant-numeric: tabular-nums; }
+  .bd.total { background: var(--accent); color: #fff; }
+  .bd.total .k { color: #eef3e3; }
+  .unified { border: 2px solid var(--accent); border-radius: 10px; padding: 10px 14px; margin: 0 0 12px; display: flex; gap: 10px 16px; align-items: center; flex-wrap: wrap; }
+  .unified .big { font-size: 1.35rem; font-weight: bold; font-variant-numeric: tabular-nums; }
+  .unified .k { font-size: .82rem; font-weight: bold; }
+  .table-wrap { overflow-x: auto; }
+  table.res { border-collapse: collapse; width: 100%; font-size: .86rem; }
+  table.res caption { text-align: left; font-size: .8rem; color: var(--muted); padding-bottom: 4px; }
+  table.res th, table.res td { padding: 7px 8px; border-bottom: 1px solid var(--border); text-align: right; white-space: nowrap; font-variant-numeric: tabular-nums; }
+  table.res th[scope=row], table.res td:first-child { text-align: left; white-space: normal; font-weight: normal; }
+  table.res thead th { font-size: .76rem; color: var(--muted); }
+  table.res td.price { font-weight: bold; font-size: 1rem; }
+  table.res small { display: block; color: var(--muted); font-size: .72rem; font-weight: normal; }
+  table.res tr.low td.wage, table.res tr.loss td.take { color: var(--ng); font-weight: bold; }
+  table.res td.use { text-align: center; }
+  table.res td.use input { width: 20px; height: 20px; }
+  .guide { font-size: .86rem; }
+  .guide ul { padding-left: 1.3em; margin: 6px 0; }
+  .guide li { margin: 4px 0; }
+
+  .locked-panel { border: 1px dashed var(--locked); border-radius: 10px; padding: 16px; text-align: center; color: var(--muted); background: #fafbf7; }
+  .locked-panel .lead { color: var(--text); font-weight: bold; }
+  .locked-panel .feat-list { text-align: left; max-width: 620px; margin: 10px auto; font-size: .85rem; padding-left: 1.2em; }
+  .buy-btn { display: inline-block; margin-top: 8px; background: var(--accent-dark); color: #fff; font-weight: bold; padding: 11px 22px; border-radius: 999px; text-decoration: none; font-size: .9rem; }
+  
+  footer { max-width: 1040px; margin: 0 auto; padding: 0 16px 40px; font-size: .8rem; color: var(--muted); }
+  footer a { color: var(--muted); }
+  @media (max-width: 700px) {
+    .mat-head { display: none; }
+    .mat-row { grid-template-columns: 1fr 1fr 1fr 44px; padding: 8px 0 10px; border-bottom: 1px solid var(--border); }
+    .mat-row .mlbl { display: block; }
+    .mat-row .f-name { grid-column: 1 / 4; grid-row: 1; }
+    .mat-row .rm { grid-column: 4; grid-row: 1; }
+    .mat-row .cost { grid-column: 1 / -1; text-align: left; padding: 0; }
+    .mat-row .cost::before { content: "1個あたり "; color: var(--muted); font-size: .8rem; }
+  }
+  @media (max-width: 600px) {
+    .row2, .row3, .row4 { flex-direction: column; gap: 0; }
+    .bar { flex-direction: column; align-items: stretch; }
+    .bar .btn { width: 100%; }
+    section.card { padding: 16px 14px; }
+    table.res .opt { display: none; }
+    table.res th, table.res td { padding: 6px 4px; font-size: .8rem; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>ハンドメイド原価計算ツール</h1>
+  <p>材料費と作業時間から、値段の決め方がわかる。ネット販売・イベント・委託・卸それぞれの値段の目安と手取り・時給・原価率を計算します。登録不要</p>
+</header>
+
+<main>
+
+  <section class="card">
+    <h2>① 作品と材料</h2>
+    <label class="field"><span class="lbl">作品名(任意)</span><input type="text" id="in-name" maxlength="40" placeholder="例: レジンのピアス"></label>
+    <p class="desc" style="margin-bottom:4px;">材料は「買ったときの値段と量」と「1個に使う量」を入れると、1個あたりの材料費を計算します。<strong>量は、買った量と使う量を同じ単位(g・本・cm・個など)で</strong>入れてください。量を入れなければ、値段をそのまま1個分として計算します。</p>
+    <div class="mat-head" aria-hidden="true"><span>材料</span><span>買った値段(円)</span><span>買った量</span><span>1個に使う量</span><span style="text-align:right;">1個あたり</span><span></span></div>
+    <div id="matList"></div>
+    <div class="btn-row" style="margin-top:8px;">
+      <button class="btn small" type="button" id="addMat">+ 材料を追加</button>
+      <button class="btn small" type="button" id="clearAll">入力をすべて消す</button>
+    </div>
+    <div class="status" id="st-mat" role="status"></div>
+    <div class="sum-line"><span>材料費(1個あたり)</span><span id="matSum">0円</span></div>
+  </section>
+
+  <section class="card">
+    <h2>② 作業時間・送料・その他の費用</h2>
+    <div class="row3">
+      <label class="field"><span class="lbl">1個にかかる作業時間</span><span class="unit"><input type="text" id="in-min" value="30" inputmode="decimal" data-min="0" data-max="6000"><span>分</span></span></label>
+      <label class="field"><span class="lbl">自分の時給</span><span class="unit"><input type="text" id="in-wage" value="1200" inputmode="decimal" data-min="0" data-max="100000"><span>円</span></span><span class="hint">参考: 最低賃金の全国加重平均は1,177円(2026年10月から順次)</span></label>
+      <label class="field"><span class="lbl">梱包・ラッピング代(1個)</span><span class="unit"><input type="text" id="in-pack" value="50" inputmode="decimal" data-min="0" data-max="100000"><span>円</span></span></label>
+    </div>
+    <div class="row3">
+      <label class="field"><span class="lbl">その他の経費(1個)</span><span class="unit"><input type="text" id="in-other" value="0" inputmode="decimal" data-min="0" data-max="100000"><span>円</span></span><span class="hint">道具の消耗・光熱費・出店料を個数で割った額など</span></label>
+      <label class="field"><span class="lbl">利益(上乗せ)</span><span class="unit"><input type="text" id="in-profit" value="30" inputmode="decimal" data-min="0" data-max="500"><span>%</span></span><span class="hint">材料費+作業代+経費に上乗せする割合</span></label>
+      <label class="field"><span class="lbl">値段の切り上げ</span>
+        <select id="in-round">
+          <option value="10">10円単位</option>
+          <option value="50">50円単位</option>
+          <option value="100" selected>100円単位</option>
+          <option value="x80">〜80円(980円など)</option>
+        </select>
+      </label>
+    </div>
+    <div class="row2">
+      <label class="field"><span class="lbl">ネット販売の送料(1件)</span><span class="unit"><input type="text" id="in-ship" value="0" inputmode="decimal" data-min="0" data-max="100000"><span>円</span></span><span class="hint">ネットショップの値段の計算に使います(手渡し・委託・卸には使いません)</span></label>
+      <fieldset class="plain">
+        <legend>送料の払い方</legend>
+        <div class="seg" id="shipSeg">
+          <label class="on"><input type="radio" name="ship" value="seller" checked> 送料込みの値段にする(自分が払う)</label>
+          <label><input type="radio" name="ship" value="buyer"> 購入者が別に払う</label>
+        </div>
+      </fieldset>
+    </div>
+  </section>
+
+  <section class="card" id="result-card">
+    <h2>③ 販売価格の目安</h2>
+    <div class="breakdown" id="breakdown"></div>
+    <div class="row3">
+      <label class="field"><span class="lbl">委託の掛け率(作家の取り分)</span><span class="unit"><input type="text" id="in-consign" value="65" inputmode="decimal" data-min="10" data-max="100"><span>%</span></span><span class="hint">お店の手数料が30%なら70%。一般に60〜70%が中心</span></label>
+      <label class="field"><span class="lbl">卸の掛け率</span><span class="unit"><input type="text" id="in-whole" value="50" inputmode="decimal" data-min="10" data-max="100"><span>%</span></span><span class="hint">お店の販売価格に対する卸値の割合。一般に50〜60%</span></label>
+      <label class="field"><span class="lbl">実際につける値段(任意)</span><span class="unit"><input type="text" id="in-actual" value="" placeholder="例: 2800" inputmode="decimal" data-min="0" data-max="10000000"><span>円</span></span><span class="hint">入れると、その値段で売ったときの手取り・時給がわかります</span></label>
+    </div>
+    <div class="unified" id="unified"></div>
+    <p class="mode-note hidden" id="modeNote"></p>
+    <div class="table-wrap" tabindex="0" role="region" aria-labelledby="resCap">
+      <table class="res" id="resTable">
+        <caption id="resCap">売り方ごとの値段の目安(「使う」にチェックした売り方から、上の統一価格を計算します)</caption>
+        <thead><tr><th scope="col">使う</th><th scope="col">売り方</th><th scope="col" id="priceHead">販売価格の目安</th><th scope="col" class="opt">手数料など</th><th scope="col">手取り</th><th scope="col">時給にすると</th><th scope="col" class="opt">原価率<small>作業代込み</small></th></tr></thead>
+        <tbody></tbody>
+      </table>
+    </div>
+    <p class="fine" id="x3line"></p>
+    <div id="warns"></div>
+    <div class="sr-only" role="status" id="srSum"></div>
+    <p class="fine" id="feeNote"></p>
+  </section>
+
+  <section class="card" id="pro-section">
+    <h2>作品ごとの原価表を作る <span class="badge">買い切り版 ¥100</span></h2>
+    <div class="locked-panel">
+      <p class="lead">作品を保存して、原価表として一覧に。材料が値上がりしたときも、全部の作品の値段をまとめて見直せます。</p>
+      <p>このページの計算は無料でそのまま使えます。買い切り版(ダウンロード購入)では、次の機能が増えます:</p>
+      <ul class="feat-list">
+        <li><strong>作品を100件まで保存</strong>して、原価・販売価格・時給を一覧で比べる(並べ替えもできます)</li>
+        <li><strong>材料の単価表</strong>: よく使う材料を登録しておけば、材料名を選ぶだけで値段と量が入ります</li>
+        <li><strong>値上げシミュレーション</strong>: 材料費が○%上がったら、保存した全作品の手渡し価格の目安がいくらになるかを一度に計算</li>
+        <li><strong>原価表をCSVで保存</strong>(Excel・スプレッドシートで開けます)、データのバックアップと復元</li>
+        <li>パソコン向けのHTMLファイルです。ダブルクリックで開くだけ、ネットにつながっていなくても使えます</li>
+      </ul>
+      <a class="buy-btn" href="https://uuhai0625.booth.pm/items/8933866" id="buyLink" target="_blank" rel="noopener">買い切り版を見る(BOOTH・新しいタブ)</a>
+    </div>
+  </section>
+
+  
+
+  <section class="card guide" id="guide">
+    <h2>ハンドメイド作品の値段の決め方</h2>
+    <ul>
+      <li><strong>材料費だけで決めない</strong>: 「材料費の3倍」のような目安だけで決めると、作業時間が長い作品ほど時給がとても低くなります。minneの値付けガイドも、自分の作業代(人件費)を原価に含めて考えることをすすめています。このツールでは「材料費+作業代+梱包・経費」に利益を上乗せして計算します。</li>
+      <li><strong>売り方によって手数料が違う</strong>: ネットショップは販売手数料が引かれます。手数料を引いたあとでも同じ手取りになるよう、売り方ごとに値段の目安を出しています。</li>
+      <li><strong>自分の売り値はそろえる</strong>: 表の値段の目安は「その売り方だけで売る場合」です。卸先・委託先の店頭価格より自分のネットショップを大きく安くすると、お店との関係が悪くなりがちです。自分で売る値段はお店の店頭価格(希望小売価格)にそろえ、上の「統一価格」や「実際につける値段」で売り方ごとの手取りを確かめましょう(卸したお店の売値を決めるのはお店です)。</li>
+    </ul>
+    <h2 style="margin-top:16px;">委託・卸の掛け率の相場</h2>
+    <ul>
+      <li><strong>委託販売</strong>: 売れた値段のうち作家に入る割合(掛け率)は、一般に60〜70%が中心と言われます(お店の手数料なら30〜40%)。百貨店や駅ビルなどでは手数料がもっと高いこともあります。</li>
+      <li><strong>卸・買取</strong>: お店の販売価格の50〜60%くらいの値段でお店に売るのが一般的と言われます。</li>
+      <li>お店の募集要項は「手数料30%」のように書かれていることが多く、その場合の掛け率は70%です。税抜価格に掛けるお店もあるので、必ず条件を確かめて入れてください。</li>
+    </ul>
+    <h2 style="margin-top:16px;">原価率の目安</h2>
+    <ul>
+      <li>原価率は「原価÷販売価格」。このツールの原価率は、minneの値付けガイドと同じく作業代(人件費)を含めた原価で計算します。</li>
+      <li>minneの値付けガイドでは、原価率30〜40%が目安とされています。原価率が高い(80%など)ときは、利益が少ない値段になっています。</li>
+    </ul>
+    <p class="fine">表示する手数料は各サービスの公開情報(2026年10月時点)をもとにした目安です。BASE・BOOTHの固定額は1注文ごと、BOOTHの倉庫発送は別の手数料がかかります。振込手数料は含みません。インボイス登録などで消費税の課税事業者になっている場合は、受け取った代金の一部を消費税として納めるため、実際の手取りは表より少なくなります。最新の条件は各サービスの案内を確認してください。売り方ごとの手数料と入金時期をくわしく比べるなら <a href="https://uuhai0625.github.io/handmade-channel-fee-calc/" target="_blank" rel="noopener">ハンドメイド販路 手数料シミュレーター</a> もどうぞ。</p>
+  </section>
+
+</main>
+
+<footer>
+  <p id="privacyNote">入力内容はどこにも送信されません(このブラウザの中に保存されます。「入力をすべて消す」で消せます)。</p>
+  <p><a href="https://uuhai0625.booth.pm/" target="_blank" rel="noopener">他のツールも見る(BOOTHショップ)</a></p>
+  <p>不具合・ご要望は X <a href="https://x.com/uuhai0625" target="_blank" rel="noopener">@uuhai0625</a> まで。</p>
+</footer>
+
+<script>
+(function () {
+  "use strict";
+
+  var EDITION = "free"; // "full" で買い切り完全版
+
+  function track(name, params) {
+    if (!window.dataLayer) return;
+    (function () { window.dataLayer.push(arguments); })("event", name, params || {});
+  }
+  var $ = function (id) { return document.getElementById(id); };
+  function el(tag, attrs, text) {
+    var e = document.createElement(tag);
+    if (attrs) Object.keys(attrs).forEach(function (k) { if (k === "class") e.className = attrs[k]; else e.setAttribute(k, attrs[k]); });
+    if (text != null) e.textContent = text;
+    return e;
+  }
+  function setSt(id, msg, err) { var e = $(id); e.textContent = msg; e.classList.toggle("err", !!err); }
+  function yen(n) { return (isFinite(n) ? Math.round(n) : 0).toLocaleString("ja-JP") + "円"; }
+  // 全角数字・カンマ・「円」「%」を受け付けて数に直す。空なら null、数でなければ NaN
+  function parseNum(v) {
+    var t = String(v == null ? "" : v).normalize("NFKC").replace(/[,\s円%分]/g, "");
+    if (t === "") return null;
+    var x = Number(t);
+    return isFinite(x) ? x : NaN;
+  }
+  function num(v, def, min, max) { var x = parseNum(v); if (x === null || isNaN(x)) return def; return Math.max(min, Math.min(max, x)); }
+
+  // 売り方ごとの手数料(販売価格に対する率と、1注文あたりの固定額)。2026年10月時点の各社公式の案内による目安
+  // minne 10.659%・Creema 10.67%(2025-11改定)・BASE 3.6%+40円+3%・メルカリ10%・BOOTH 5.6%+45円(2025-10改定)
+  // shipFee: 送料を含めた合計に手数料がかかる売り方
+  var CHANNELS = [
+    { id: "direct", label: "イベント・手渡し", note: "手数料なし", rate: 0, fixed: 0, offline: true },
+    { id: "minne", label: "minne", note: "販売手数料10.659%(税込・送料にもかかります。PLUS会員は少し安くなります)", rate: 0.10659, fixed: 0, shipFee: true },
+    { id: "creema", label: "Creema", note: "販売手数料10.67%(税込・送料にもかかります)", rate: 0.1067, fixed: 0, shipFee: true },
+    { id: "base", label: "BASE(スタンダード)", note: "3.6%+40円+サービス利用料3%(送料にもかかります)", rate: 0.066, fixed: 40, shipFee: true },
+    { id: "mercari", label: "メルカリ", note: "販売手数料10%", rate: 0.10, fixed: 0 },
+    { id: "booth", label: "BOOTH(自宅発送)", note: "5.6%+45円(送料にもかかります)", rate: 0.056, fixed: 45, shipFee: true },
+    { id: "consign", label: "委託販売", consign: true, offline: true },
+    { id: "whole", label: "卸(お店の販売価格)", whole: true, offline: true }
+  ];
+  var MAX_MATS = 30, KEY = "genka_cur_v1", MIN_WAGE = 1177;
+
+  // ===== 状態 =====
+  function defaultState() { return { name: "", mats: [blankMat()], min: 30, wage: 1200, pack: 50, other: 0, profit: 30, round: "100", consign: 65, whole: 50, ship: 0, shipMode: "seller", actual: "", use: ["direct", "minne"] }; }
+  function exampleMats() { return [{ name: "UVレジン液(例)", price: "1200", qty: "65", use: "2" }, { name: "ピアス金具(例)", price: "330", qty: "10", use: "2" }]; }
+  var state = defaultState(); state.mats = exampleMats();
+  function blankMat() { return { name: "", price: "", qty: "", use: "" }; }
+  function cleanMat(o) {
+    var m = blankMat(); if (!o || typeof o !== "object") return m;
+    if (typeof o.name === "string") m.name = o.name.slice(0, 30);
+    ["price", "qty", "use"].forEach(function (k) { if (typeof o[k] === "string" || typeof o[k] === "number") m[k] = String(o[k]).slice(0, 12); });
+    return m;
+  }
+  // 1個あたりの材料費。{cost, bad}  bad: 計算できない理由
+  function matCost(m) {
+    var p = parseNum(m.price), q = parseNum(m.qty), u = parseNum(m.use);
+    if (p === null) return { cost: 0 };
+    if (isNaN(p) || isNaN(q) || isNaN(u) || p < 0 || (q !== null && q < 0) || (u !== null && u < 0)) return { cost: 0, bad: "数字を確かめてください" };
+    if (q === null && u === null) return { cost: p };            // 量を入れなければ「1個分の値段」
+    if (q === null || q < 1e-6) return { cost: 0, bad: "買った量を入れてください" };
+    if (u === null) return { cost: 0, bad: "使う量を入れてください" };
+    return { cost: p * u / q };
+  }
+  function roundUp(n, mode) {
+    if (!(n > 0)) return 0;
+    if (mode === "x80") return Math.max(80, Math.ceil((n - 80) / 100 - 1e-9) * 100 + 80);
+    var u = Number(mode) || 10;
+    return Math.ceil(n / u - 1e-9) * u;
+  }
+
+  // 1個あたりの内訳と、売り方ごとの値段(s は状態。グローバルには触れない)
+  function calc(s, matMul) {
+    var mat = s.mats.reduce(function (a, m) { return a + matCost(m).cost; }, 0) * (matMul || 1);
+    var hours = s.min / 60, labor = hours * s.wage;
+    var cost = mat + s.pack + s.other;            // お金で出ていく原価
+    var base = cost + labor;                      // 作業代込みの原価
+    var need = base * (1 + s.profit / 100);       // 手元に残したい額
+    var rows = CHANNELS.map(function (c) { return rowAt(c, priceFor(c, need, s), s, cost, base, hours); });
+    return { mat: mat, labor: labor, cost: cost, base: base, need: need, hours: hours, rows: rows };
+  }
+  function shipOf(c, s) { return c.offline ? 0 : s.ship; }
+  function priceFor(c, need, s) {
+    var S = shipOf(c, s);
+    if (c.consign) return roundUp(need / (s.consign / 100), s.round);
+    if (c.whole) return roundUp(need / (s.whole / 100), s.round);
+    if (s.shipMode === "buyer") return roundUp((need + (c.shipFee ? S * c.rate : 0) + c.fixed) / (1 - c.rate), s.round);
+    return roundUp((need + S + c.fixed) / (1 - c.rate), s.round);   // 送料込み: 値段から送料を自分で払う
+  }
+  // 値段 price で売ったときの手数料・手取り
+  function rowAt(c, price, s, cost, base, hours) {
+    var S = shipOf(c, s), fee, take;
+    if (c.consign) { take = price * s.consign / 100; fee = price - take; }
+    else if (c.whole) { take = price * s.whole / 100; fee = price - take; }
+    else if (s.shipMode === "buyer") { fee = (price + (c.shipFee ? S : 0)) * c.rate + c.fixed; take = price - fee; }
+    else { fee = price * c.rate + c.fixed + S; take = price - fee; }   // 送料込みの場合、送料も「手数料など」に含める
+    var wage = hours > 0 ? (take - cost) / hours : null;
+    return { c: c, price: price, fee: fee, take: take, wage: wage, rate: price > 0 ? base / price : null, low: wage != null && wage < s.wage - 0.5, loss: take < cost - 0.5 };
+  }
+
+  // ===== 描画 =====
+  var inputs = ["in-min", "in-wage", "in-pack", "in-other", "in-profit", "in-consign", "in-whole", "in-ship", "in-actual"];
+  function fieldNum(id, def) {
+    var e = $(id), v = parseNum(e.value), min = Number(e.getAttribute("data-min")), max = Number(e.getAttribute("data-max"));
+    var bad = v !== null && (isNaN(v) || v < min || v > max);
+    e.setAttribute("aria-invalid", bad ? "true" : "false");
+    if (v === null || isNaN(v)) return { v: def, bad: bad };
+    return { v: Math.max(min, Math.min(max, v)), bad: bad };
+  }
+  function readState() {
+    var bad = [];
+    function f(id, def, key, label) { var r = fieldNum(id, def); state[key] = r.v; if (r.bad) bad.push(label); }
+    state.name = $("in-name").value.trim().slice(0, 40);
+    f("in-min", 0, "min", "作業時間"); f("in-wage", 0, "wage", "時給"); f("in-pack", 0, "pack", "梱包代"); f("in-other", 0, "other", "その他の経費");
+    f("in-profit", 0, "profit", "利益"); f("in-consign", 65, "consign", "委託の掛け率"); f("in-whole", 50, "whole", "卸の掛け率"); f("in-ship", 0, "ship", "送料");
+    state.round = ["10", "50", "100", "x80"].indexOf($("in-round").value) >= 0 ? $("in-round").value : "100";
+    var sm = document.querySelector('input[name="ship"]:checked'); state.shipMode = sm && sm.value === "buyer" ? "buyer" : "seller";
+    var a = parseNum($("in-actual").value); state.actual = a === null || isNaN(a) || a <= 0 ? "" : Math.min(1e7, a);
+    $("in-actual").setAttribute("aria-invalid", a !== null && (isNaN(a) || a < 0) ? "true" : "false");
+    return bad;
+  }
+  function render() {
+    var bad = readState();
+    var r = calc(state), actual = state.actual !== "" ? state.actual : null;
+    // 材料ごとの1個あたり
+    var badMats = [];
+    document.querySelectorAll("#matList .mat-row").forEach(function (row, i) {
+      var m = state.mats[i]; if (!m) return;
+      var mc = matCost(m), c = row.querySelector(".cost");
+      c.textContent = mc.bad ? mc.bad : yen(mc.cost); c.classList.toggle("bad", !!mc.bad);
+      if (mc.bad) badMats.push(i + 1);
+    });
+    $("matSum").textContent = yen(r.mat);
+    var bd = $("breakdown"); bd.innerHTML = "";
+    [["材料費", r.mat], ["作業代(" + fmtH(r.hours) + "×時給)", r.labor], ["梱包・経費", state.pack + state.other], ["利益(" + state.profit + "%)", r.need - r.base]].forEach(function (x) {
+      var d = el("div", { class: "bd" }); d.appendChild(el("div", { class: "k" }, x[0])); d.appendChild(el("div", { class: "v" }, yen(x[1]))); bd.appendChild(d);
+    });
+    var t = el("div", { class: "bd total" }); t.appendChild(el("div", { class: "k" }, "1個あたり手元に残したい額")); t.appendChild(el("div", { class: "v" }, yen(r.need))); bd.appendChild(t);
+
+    // 統一価格: チェックした売り方すべてで目標の手取りを満たす値段
+    var used = r.rows.filter(function (x) { return state.use.indexOf(x.c.id) >= 0; });
+    var uni = used.length ? Math.max.apply(null, used.map(function (x) { return x.price; })) : 0;
+    var u = $("unified"); u.innerHTML = "";
+    if (used.length) {
+      var w = el("div"); w.appendChild(el("div", { class: "k" }, "チェックした売り方すべてで同じ値段にするなら")); w.appendChild(el("div", { class: "big" }, yen(uni)));
+      u.appendChild(w);
+      var ub = el("button", { type: "button", class: "btn small" }, "この値段で手取りを確かめる");
+      ub.addEventListener("click", function () { $("in-actual").value = String(uni); render(); $("resTable").scrollIntoView({ block: "nearest" }); });
+      u.appendChild(ub);
+    } else u.appendChild(el("div", { class: "k" }, "表の「使う」にチェックすると、どの売り方でも同じ値段にする場合の値段(統一価格)を出します。"));
+
+    var rows = actual ? CHANNELS.map(function (c) { return rowAt(c, actual, state, r.cost, r.base, r.hours); }) : r.rows;
+    $("priceHead").textContent = actual ? "この値段で売ると" : "販売価格の目安";
+    $("modeNote").classList.toggle("hidden", !actual);
+    $("modeNote").textContent = actual ? yen(actual) + "で売ったときの手取りと時給を表示しています(目安に戻すには「実際につける値段」を空にしてください)。" : "";
+    var tb = $("resTable").querySelector("tbody"); tb.innerHTML = "";
+    rows.forEach(function (x, i) {
+      var cls = (x.low ? "low " : "") + (x.loss ? "loss" : "");
+      var tr = el("tr", cls ? { class: cls.trim() } : null);
+      var uc = el("td", { class: "use" }), cb = el("input", { type: "checkbox", "aria-label": x.c.label + "を統一価格の計算に使う" });
+      cb.checked = state.use.indexOf(x.c.id) >= 0;
+      cb.addEventListener("change", function () { state.use = state.use.filter(function (k) { return k !== x.c.id; }); if (cb.checked) state.use.push(x.c.id); render(); });
+      uc.appendChild(cb); tr.appendChild(uc);
+      var th = el("th", { scope: "row" }); th.appendChild(document.createTextNode(x.c.label));
+      th.appendChild(el("small", null, x.c.consign ? "作家の取り分" + state.consign + "%" : x.c.whole ? "卸値=販売価格の" + state.whole + "%" : x.c.note));
+      tr.appendChild(th);
+      var pc = el("td", { class: "price" }, yen(x.price));
+      if (x.c.whole) pc.appendChild(el("small", null, "卸値 " + yen(x.take)));
+      if (actual && !x.c.offline) pc.appendChild(el("small", null, "目安 " + yen(r.rows[i].price)));
+      tr.appendChild(pc);
+      tr.appendChild(el("td", { class: "opt" }, yen(x.fee)));
+      tr.appendChild(el("td", { class: "take" }, yen(x.take) + (x.loss ? " ▼赤字" : "")));
+      tr.appendChild(el("td", { class: "wage" }, x.wage == null ? "—" : yen(x.wage) + (x.low ? " ▼" : "")));
+      tr.appendChild(el("td", { class: "opt" }, x.rate == null ? "—" : Math.round(x.rate * 100) + "%"));
+      tb.appendChild(tr);
+    });
+    // 「材料費の3倍」で値付けした場合との比較
+    var x3 = roundUp(r.mat * 3, state.round);
+    $("x3line").textContent = r.mat > 0 && r.hours > 0 ? "参考: 「材料費の3倍」(" + yen(x3) + ")で手渡し販売すると、時給は" + yen((x3 - r.cost) / r.hours) + "になります。" : "";
+
+    var msgs = [];
+    if (bad.length) msgs.push(bad.join("・") + "の数字を確かめてください(範囲外か、数字として読めません)。");
+    if (badMats.length) msgs.push("材料" + badMats.join("・") + "は計算に入っていません(赤い文字を確かめてください)。");
+    if (actual) {
+      var lows = rows.filter(function (x) { return x.low; }), losses = rows.filter(function (x) { return x.loss; });
+      if (losses.length) msgs.push("▼赤字の売り方があります(手取りが材料費・梱包・経費を下回ります): " + losses.map(function (x) { return x.c.label; }).join("・"));
+      if (lows.length) msgs.push("時給が設定(" + yen(state.wage) + ")を下回る売り方には ▼ を付けています。");
+    }
+    if (!r.mat) msgs.push("①に材料の値段を入れると、材料費が計算に入ります。");
+    if (state.wage && state.wage < MIN_WAGE) msgs.push("時給の設定が最低賃金の全国加重平均(1,177円)より低めです(参考値)。作業時間の価値も値段に入れておくと、続けやすくなります。");
+    if (state.ship > 0 && state.shipMode === "seller") msgs.push("送料込みの値段にしているので、ネットショップの値段の目安には送料(" + yen(state.ship) + ")が含まれています。");
+    setWarns(msgs);
+    $("feeNote").textContent = state.ship > 0 ? "minne・Creema・BASE・BOOTHは、送料を含めた合計に手数料がかかるものとして計算しています。" : "送料を入れると、ネットショップの値段の目安に送料を反映します(minne・Creema・BASE・BOOTHは送料にも手数料がかかります)。";
+    srSummary(r, rows);
+    save();
+    afterRender(r);
+  }
+  var afterRender = function () {};
+  var srTimer = null;
+  function srSummary(r, rows) {
+    clearTimeout(srTimer);
+    srTimer = setTimeout(function () { $("srSum").textContent = "手元に残したい額" + yen(r.need) + "。" + rows.slice(0, 3).map(function (x) { return x.c.label + " " + yen(x.price); }).join("、"); }, 1200);
+  }
+  function fmtH(h) { var m = Math.round(h * 60); return m >= 60 ? Math.floor(m / 60) + "時間" + (m % 60 ? m % 60 + "分" : "") : m + "分"; }
+  var lastWarns = null;
+  function setWarns(msgs) {
+    var key = msgs.join("\n"); if (key === lastWarns) return; lastWarns = key;
+    var w = $("warns"); w.innerHTML = "";
+    msgs.forEach(function (m) { w.appendChild(el("p", { class: "warn" }, m)); });
+  }
+  var rTimer = null;
+  function soon() { clearTimeout(rTimer); rTimer = setTimeout(render, 120); }
+
+  // ===== 材料の入力欄 =====
+  var decorateMatRow = function () {};
+  function renderMats(focusIdx) {
+    var box = $("matList"); box.innerHTML = "";
+    state.mats.forEach(function (m, i) {
+      var row = el("div", { class: "mat-row" });
+      row.appendChild(cellIn("f-name", "材料", "name", m, i, { type: "text", maxlength: "30", placeholder: "例: ピアス金具" }));
+      row.appendChild(cellIn("f-price", "買った値段(円)", "price", m, i, { type: "text", inputmode: "decimal", placeholder: "例: 330" }));
+      row.appendChild(cellIn("f-qty", "買った量", "qty", m, i, { type: "text", inputmode: "decimal", placeholder: "例: 10(個)" }));
+      row.appendChild(cellIn("f-use", "1個に使う量", "use", m, i, { type: "text", inputmode: "decimal", placeholder: "例: 2(個)" }));
+      row.appendChild(el("div", { class: "cost" }, yen(matCost(m).cost)));
+      var rm = el("button", { type: "button", class: "rm", "aria-label": rmLabel(m, i) }, "×");
+      rm.addEventListener("click", function () {
+        state.mats.splice(i, 1); if (!state.mats.length) state.mats.push(blankMat());
+        renderMats(Math.min(i, state.mats.length - 1)); setSt("st-mat", "材料" + (i + 1) + "を消しました。"); syncAdd(); soon();
+      });
+      row.appendChild(rm);
+      decorateMatRow(row, m, i);
+      box.appendChild(row);
+    });
+    syncAdd();
+    if (focusIdx != null) { var r = box.querySelectorAll(".mat-row")[focusIdx]; if (r) r.querySelector("input").focus(); }
+  }
+  function rmLabel(m, i) { return "材料" + (i + 1) + (m.name ? "(" + m.name + ")" : "") + "を消す"; }
+  function cellIn(cls, label, key, m, i, attrs) {
+    var l = el("label", { class: cls });
+    l.appendChild(el("span", { class: "mlbl" }, label));
+    var a = { "aria-label": "材料" + (i + 1) + "の" + label }; Object.keys(attrs).forEach(function (k) { a[k] = attrs[k]; });
+    var inp = el("input", a); inp.value = m[key];
+    inp.addEventListener("input", function () {
+      m[key] = inp.value.slice(0, key === "name" ? 30 : 12);
+      if (key === "name") inp.closest(".mat-row").querySelector(".rm").setAttribute("aria-label", rmLabel(m, i));
+      soon();
+    });
+    l.appendChild(inp);
+    return l;
+  }
+  function syncAdd() { var full = state.mats.length >= MAX_MATS; $("addMat").disabled = full; $("addMat").textContent = full ? "材料は" + MAX_MATS + "件までです" : "+ 材料を追加"; }
+  $("addMat").addEventListener("click", function () {
+    if (state.mats.length >= MAX_MATS) return;
+    state.mats.push(blankMat()); renderMats(state.mats.length - 1); setSt("st-mat", "材料" + state.mats.length + "を追加しました。");
+  });
+  $("clearAll").addEventListener("click", function () {
+    if (!confirm("入力した材料・作業時間などをすべて消して、最初の状態に戻しますか?")) return;
+    state = defaultState(); try { localStorage.removeItem(KEY); } catch (e) {}
+    fillForm(); renderMats(0); render(); setSt("st-mat", "入力をすべて消しました。");
+  });
+  inputs.concat(["in-name"]).forEach(function (id) { $(id).addEventListener("input", soon); });
+  $("in-round").addEventListener("change", soon);
+  document.querySelectorAll('input[name="ship"]').forEach(function (r) {
+    r.addEventListener("change", function () { document.querySelectorAll("#shipSeg label").forEach(function (l) { l.classList.toggle("on", l.contains(document.querySelector('input[name="ship"]:checked'))); }); soon(); });
+  });
+
+  // ===== 保存(このブラウザだけ) =====
+  function snapshot() { return { name: state.name, mats: state.mats, min: state.min, wage: state.wage, pack: state.pack, other: state.other, profit: state.profit, round: state.round, consign: state.consign, whole: state.whole, ship: state.ship, shipMode: state.shipMode, actual: state.actual, use: state.use }; }
+  var saveWarned = false;
+  function save() { try { localStorage.setItem(KEY, JSON.stringify(snapshot())); } catch (e) { if (!saveWarned) { saveWarned = true; setSt("st-mat", "このブラウザに保存できませんでした(容量がいっぱいの可能性があります)。", true); } } }
+  // o の内容を target に入れる(グローバルの state には触れない)
+  function applySnapTo(target, o) {
+    if (!o || typeof o !== "object") return target;
+    if (typeof o.name === "string") target.name = o.name.slice(0, 40);
+    if (Array.isArray(o.mats) && o.mats.length) target.mats = o.mats.slice(0, MAX_MATS).map(cleanMat);
+    [["min", 0, 6000], ["wage", 0, 100000], ["pack", 0, 100000], ["other", 0, 100000], ["profit", 0, 500], ["consign", 10, 100], ["whole", 10, 100], ["ship", 0, 100000]].forEach(function (k) {
+      var v = Number(o[k[0]]); if (o[k[0]] != null && o[k[0]] !== "" && isFinite(v)) target[k[0]] = Math.max(k[1], Math.min(k[2], v));
+    });
+    if (["10", "50", "100", "x80"].indexOf(o.round) >= 0) target.round = o.round;
+    if (o.shipMode === "buyer" || o.shipMode === "seller") target.shipMode = o.shipMode;
+    var a = Number(o.actual); target.actual = o.actual !== "" && o.actual != null && isFinite(a) && a > 0 ? Math.min(1e7, a) : "";
+    if (Array.isArray(o.use)) target.use = o.use.filter(function (k) { return CHANNELS.some(function (c) { return c.id === k; }); });
+    return target;
+  }
+  function fillForm() {
+    $("in-name").value = state.name; $("in-min").value = state.min; $("in-wage").value = state.wage; $("in-pack").value = state.pack;
+    $("in-other").value = state.other; $("in-profit").value = state.profit; $("in-round").value = state.round;
+    $("in-consign").value = state.consign; $("in-whole").value = state.whole; $("in-ship").value = state.ship; $("in-actual").value = state.actual;
+    document.querySelector('input[name="ship"][value="' + state.shipMode + '"]').checked = true;
+    document.querySelectorAll("#shipSeg label").forEach(function (l) { l.classList.toggle("on", l.contains(document.querySelector('input[name="ship"]:checked'))); });
+  }
+
+  
+
+  if (EDITION !== "full") {
+    $("privacyNote").innerHTML = '入力内容はどこにも送信されません(このブラウザの中で計算・保存します。「入力をすべて消す」で消せます)。このページでは利用状況の把握のためにアクセス解析(Google Analytics)を使っています(入力内容は送られません)。<a href="https://policies.google.com/technologies/partner-sites?hl=ja" target="_blank" rel="noopener">Googleによるデータの使用について</a>';
+  }
+
+  try { var saved = JSON.parse(localStorage.getItem(KEY) || "null"); if (saved) state = applySnapTo(defaultState(), saved); } catch (e) {}
+  fillForm(); renderMats(); render();
+})();
+</script>
+</body>
+</html>
